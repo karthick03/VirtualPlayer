@@ -1,4 +1,4 @@
-package com.example.karthickramjee.virtualplayer;
+package com.android.lab.virtualplayer;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
