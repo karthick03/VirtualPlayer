@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -27,9 +26,7 @@ class StorageHelper {
             return sv.file.getPath();
         else {
             String sdpath = System.getenv("SECONDARY_STORAGE");
-            if (sdpath == null || sdpath.isEmpty())
-                sdpath = "/storage/extSdCard";
-            return sdpath;
+            return (sdpath == null || sdpath.isEmpty()) ? "/storage/extSdCard" : sdpath;
         }
     }
 
@@ -49,8 +46,8 @@ class StorageHelper {
     private static final String STORAGES_ROOT;
 
     static {
-        final String primaryStoragePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        final int index = primaryStoragePath.indexOf(File.separatorChar, 1);
+        String primaryStoragePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        int index = primaryStoragePath.indexOf(File.separatorChar, 1);
         STORAGES_ROOT = index != -1 ? primaryStoragePath.substring(0, index + 1) : File.separator;
     }
 
@@ -139,7 +136,7 @@ class StorageHelper {
         // remove volumes that are the same devices
         boolean primaryStorageIncluded = false;
         final File externalStorage = Environment.getExternalStorageDirectory();
-        final List<StorageVolume> volumeList = new ArrayList<StorageVolume>();
+        final List<StorageVolume> volumeList = new ArrayList<>();
         for (final Entry<String, List<StorageVolume>> entry : deviceVolumeMap.entrySet()) {
             final List<StorageVolume> volumes = entry.getValue();
             if (volumes.size() == 1) {
@@ -192,148 +189,55 @@ class StorageHelper {
         return null;
     }
 
-    /**
-     * Sets {@link StorageVolume.Type}, removable and emulated flags and adds to
-     * volumeList
-     *
-     * @param volumeList
-     *            List to add volume to
-     * @param v
-     *            volume to add to list
-     * @param includeUsb
-     *            if false, volume with type {@link StorageVolume.Type#USB} will
-     *            not be added
-     * @param asFirstItem
-     *            if true, adds the volume at the beginning of the volumeList
-     */
     private  void setTypeAndAdd(final List<StorageVolume> volumeList, final StorageVolume v,
                                 final boolean includeUsb, final boolean asFirstItem) {
         final StorageVolume.Type type = resolveType(v);
         if (includeUsb || type != StorageVolume.Type.USB) {
             v.mType = type;
-            if (v.file.equals(Environment.getExternalStorageDirectory())) {
-                v.mRemovable = Environment.isExternalStorageRemovable();
-            } else {
-                v.mRemovable = type != StorageVolume.Type.INTERNAL;
-            }
+            v.mRemovable = v.file.equals(Environment.getExternalStorageDirectory()) ? Environment.isExternalStorageRemovable() : type != StorageVolume.Type.INTERNAL;
+
             v.mEmulated = type == StorageVolume.Type.INTERNAL;
-            if (asFirstItem) {
-                volumeList.add(0, v);
-            } else {
-                volumeList.add(v);
-            }
+
+            if (asFirstItem) volumeList.add(0, v);
+            else volumeList.add(v);
         }
     }
 
-    /**
-     * Resolved {@link StorageVolume} type.
-     *
-     * @param v            {@link StorageVolume} to resolve type for
-     * @return {@link StorageVolume} type
-     */
     private  StorageVolume.Type resolveType(final StorageVolume v) {
-        if (v.file.equals(Environment.getExternalStorageDirectory()) && Environment.isExternalStorageEmulated()) {
+        if (v.file.equals(Environment.getExternalStorageDirectory()) && Environment.isExternalStorageEmulated())
             return StorageVolume.Type.INTERNAL;
-        } else if (containsIgnoreCase(v.file.getAbsolutePath(), "usb")) {
+        else if (v.file.getAbsolutePath().equalsIgnoreCase("usb"))
             return StorageVolume.Type.USB;
-        } else {
+        else
             return StorageVolume.Type.EXTERNAL;
-        }
     }
 
-    /**
-     * Checks whether the array contains object.
-     *
-     * @param <T> the generic type
-     * @param array            Array to check
-     * @param object            Object to find
-     * @return true, if the given array contains the object
-     */
-    private  <T> boolean arrayContains(T[] array, T object) {
-        for (final T item : array) {
-            if (item.equals(object)) {
+    private <T> boolean arrayContains(T[] array, T object) {
+        for (final T item : array)
+            if (item.equals(object))
                 return true;
-            }
-        }
         return false;
     }
 
-    /**
-     * Checks whether the path contains one of the directories
-     *
-     * For example, if path is /one/two, it returns true input is "one" or
-     * "two". Will return false if the input is one of "one/two", "/one" or
-     * "/two"
-     *
-     * @param path
-     *            path to check for a directory
-     * @param dirs
-     *            directories to find
-     * @return true, if the path contains one of the directories
-     */
-    private  boolean pathContainsDir(final String path, final String[] dirs) {
+    private boolean pathContainsDir(String path, String[] dirs) {
         final StringTokenizer tokens = new StringTokenizer(path, File.separator);
         while (tokens.hasMoreElements()) {
-            final String next = tokens.nextToken();
-            for (final String dir : dirs) {
-                if (next.equals(dir)) {
+            String next = tokens.nextToken();
+            for (String dir : dirs)
+                if (next.equals(dir))
                     return true;
-                }
-            }
         }
         return false;
     }
 
-    /**
-     * Checks ifString contains a search String irrespective of case, handling.
-     * Case-insensitivity is defined as by
-     * {@link String#equalsIgnoreCase(String)}.
-     *
-     * @param str
-     *            the String to check, may be null
-     * @param searchStr
-     *            the String to find, may be null
-     * @return true if the String contains the search String irrespective of
-     *         case or false if not or {@code null} string input
-     */
-    public  boolean containsIgnoreCase(final String str, final String searchStr) {
-        if (str == null || searchStr == null) {
-            return false;
-        }
-        final int len = searchStr.length();
-        final int max = str.length() - len;
-        for (int i = 0; i <= max; i++) {
-            if (str.regionMatches(true, i, searchStr, 0, len)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Represents storage volume information.
-     */
-    public static  final class StorageVolume {
+    public static final class StorageVolume {
 
         /**
          * Represents {@link StorageVolume} type.
          */
         public enum Type {
-            /**
-             * Device built-in internal storage. Probably points to
-             * {@link Environment#getExternalStorageDirectory()}
-             */
             INTERNAL,
-
-            /**
-             * External storage. Probably removable, if no other
-             * {@link StorageVolume} of type {@link #INTERNAL} is returned by
-             * {@link StorageHelper#getStorages(boolean)}, this might be
-             * pointing to {@link Environment#getExternalStorageDirectory()}
-             */
             EXTERNAL,
-
-            /** Removable usb storage. */
             USB
         }
 
@@ -347,37 +251,21 @@ class StorageHelper {
         public final String fileSystem;
 
         /** if true, the storage is mounted as read-only. */
-        private boolean mReadOnly;
+        public boolean mReadOnly;
 
         /** If true, the storage is removable. */
-        private boolean mRemovable;
+        public boolean mRemovable;
 
         /** If true, the storage is emulated. */
-        private boolean mEmulated;
+        public boolean mEmulated;
 
         /** Type of this storage. */
-        private Type mType;
+        public Type mType;
 
         StorageVolume(String device, File file, String fileSystem) {
             this.device = device;
             this.file = file;
             this.fileSystem = fileSystem;
-        }
-
-        public Type getType() {
-            return mType;
-        }
-
-        public boolean isRemovable() {
-            return mRemovable;
-        }
-
-        public boolean isEmulated() {
-            return mEmulated;
-        }
-
-        public boolean isReadOnly() {
-            return mReadOnly;
         }
 
         @Override
