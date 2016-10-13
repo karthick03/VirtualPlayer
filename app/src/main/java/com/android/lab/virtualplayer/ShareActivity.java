@@ -3,9 +3,11 @@ package com.android.lab.virtualplayer;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,8 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
-import com.android.lab.virtualplayer.constants.Constants;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -68,10 +68,15 @@ public class ShareActivity extends Activity {
 
     public void create() {
 
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String ssid = sharedPref.getString(SettingsActivity.HOTSPOT_NAME, "");
+        int port = Integer.parseInt(sharedPref.getString(SettingsActivity.PORT_VALUE, "6676"));
+
         wifiManager.setWifiEnabled(false);
 
         WifiConfiguration netConfig = new WifiConfiguration();
-        netConfig.SSID = "VP_Sharer";
+        netConfig.SSID = "VP_" + ssid;
         netConfig.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
         netConfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
         netConfig.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
@@ -87,10 +92,10 @@ public class ShareActivity extends Activity {
             int apstate = wifiApManager.getWifiApState();
             netConfig = wifiApManager.getWifiApConfiguration();
 
-            fileServer = new FileServer(Constants.PORT);
+            fileServer = new FileServer(port);
             fileServer.start();
 
-            status.setText(String.format(Locale.ENGLISH, "Server running at http://%s:%d", getHostAddress(), Constants.PORT));
+            status.setText(String.format(Locale.ENGLISH, "Server running at http://%s:%d", getHostAddress(), port));
             Log.d("VP_Sharer", String.format("SSID = %s Password = %s APState = %d Hostname = %s", netConfig.SSID, netConfig.preSharedKey, apstate, getHostAddress()));
 
         } catch (Exception e) {

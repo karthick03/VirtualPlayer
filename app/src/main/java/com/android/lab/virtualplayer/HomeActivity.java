@@ -35,12 +35,11 @@ public class HomeActivity extends Activity {
         return true;
     }
 
-
     public void sharer(View v) {
         startActivity(new Intent(HomeActivity.this, ShareActivity.class));
     }
 
     public void user(View v) {
-        //
+        startActivity(new Intent(HomeActivity.this, UserActivity.class));
     }
 }
