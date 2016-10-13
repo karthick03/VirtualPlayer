@@ -1,13 +1,13 @@
 package com.android.lab.virtualplayer;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import android.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,7 +16,7 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserActivity extends AppCompatActivity {
+public class UserActivity extends Activity {
 
     WifiManager wifiManager;
 
@@ -27,7 +27,7 @@ public class UserActivity extends AppCompatActivity {
 
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 
-        ActionBar actionBar = getSupportActionBar();
+        ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
         }

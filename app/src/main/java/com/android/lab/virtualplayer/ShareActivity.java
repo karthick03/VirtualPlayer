@@ -1,11 +1,15 @@
 package com.android.lab.virtualplayer;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -20,7 +24,7 @@ import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.Locale;
 
-public class ShareActivity extends AppCompatActivity {
+public class ShareActivity extends Activity {
 
     WifiManager wifiManager;
     WifiApManager wifiApManager;
@@ -36,6 +40,22 @@ public class ShareActivity extends AppCompatActivity {
         wifiApManager = new WifiApManager(wifiManager);
 
         status = (TextView) findViewById(R.id.status);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                startActivity(new Intent(ShareActivity.this, SettingsActivity.class));
+        }
+        return true;
     }
 
     public void toggleHotspot(View v) {
