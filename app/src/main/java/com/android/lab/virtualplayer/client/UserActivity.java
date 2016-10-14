@@ -1,4 +1,4 @@
-package com.android.lab.virtualplayer;
+package com.android.lab.virtualplayer.client;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,13 +8,18 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.app.ActionBar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.android.lab.virtualplayer.R;
+import com.android.lab.virtualplayer.SettingsActivity;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class UserActivity extends Activity {
 
@@ -53,12 +58,17 @@ public class UserActivity extends Activity {
 
 
     public void join(View view) {
+
+        wifiManager.setWifiEnabled(true);
+
         List<ScanResult> scanResultList =   wifiManager.getScanResults();
         List<ScanResult> finalList = new ArrayList<>();
 
-        for(ScanResult scanResult: scanResultList)
-            if(scanResult.SSID.startsWith("VP_"))
+        for(ScanResult scanResult: scanResultList) {
+            Log.d("USERA", scanResult.SSID);
+            if (scanResult.SSID.startsWith("VP_"))
                 finalList.add(scanResult);
+        }
 
         if(finalList.size() == 1) {
             WifiConfiguration wc = new WifiConfiguration();
@@ -66,12 +76,15 @@ public class UserActivity extends Activity {
             ScanResult s = finalList.get(0);
 
             wc.SSID = s.SSID;
+
             wc.status = WifiConfiguration.Status.ENABLED;
             wc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
 
             int netId = wifiManager.addNetwork(wc);
             wifiManager.enableNetwork(netId, true);
-            wifiManager.setWifiEnabled(true);
+            Log.d("USERA", String.format(Locale.ENGLISH, "Connected %s %s", s.BSSID, s.toString()));
+
+            //TODO: intent to List of music files
         }
     }
 }

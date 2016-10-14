@@ -17,7 +17,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UserActivity"/>
+        <activity android:name=".client.UserActivity" />
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
@@ -28,7 +28,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ShareActivity" />
+        <activity android:name=".server.ShareActivity" />
+        <activity android:name=".client.MusicActivity"></activity>
     </application>
 
 </manifest>

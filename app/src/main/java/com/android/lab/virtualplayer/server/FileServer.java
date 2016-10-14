@@ -1,8 +1,9 @@
-package com.android.lab.virtualplayer;
+package com.android.lab.virtualplayer.server;
 
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
+import com.android.lab.virtualplayer.StorageHelper;
 import com.android.lab.virtualplayer.data.MusicTrack;
 
 import org.json.JSONArray;

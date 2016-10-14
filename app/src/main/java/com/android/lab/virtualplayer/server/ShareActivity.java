@@ -1,4 +1,4 @@
-package com.android.lab.virtualplayer;
+package com.android.lab.virtualplayer.server;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,6 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import com.android.lab.virtualplayer.R;
+import com.android.lab.virtualplayer.SettingsActivity;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

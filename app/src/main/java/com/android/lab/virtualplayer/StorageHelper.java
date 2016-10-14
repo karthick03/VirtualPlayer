@@ -13,7 +13,7 @@ import java.util.StringTokenizer;
 
 import android.os.Environment;
 
-class StorageHelper {
+public class StorageHelper {
 
     private static final String TAG = "StorageHelper";
 

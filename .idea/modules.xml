@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/VirtualPlayer.iml" filepath="$PROJECT_DIR$/VirtualPlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/music-sharer.iml" filepath="$PROJECT_DIR$/music-sharer.iml" />
     </modules>
   </component>
 </project>

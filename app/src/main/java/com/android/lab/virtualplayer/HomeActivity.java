@@ -8,6 +8,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.android.lab.virtualplayer.client.UserActivity;
+import com.android.lab.virtualplayer.server.ShareActivity;
+
 public class HomeActivity extends Activity {
 
     @Override
