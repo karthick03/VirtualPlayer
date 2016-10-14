@@ -1,16 +1,38 @@
 package com.android.lab.virtualplayer;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_home);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
+        }
+
+        return true;
     }
 
     public void sharer(View v) {
@@ -18,6 +40,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void user(View v) {
-        //
+        startActivity(new Intent(HomeActivity.this, UserActivity.class));
     }
 }
