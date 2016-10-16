@@ -22,20 +22,21 @@ public class HomeActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = this.getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        return true;
+//        MenuInflater inflater = this.getMenuInflater();
+//        inflater.inflate(R.menu.menu_main, menu);
+//        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        switch (item.getItemId()) {
+//            case R.id.action_settings:
+//                startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
+//        }
 
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
-        }
-
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     public void sharer(View v) {
