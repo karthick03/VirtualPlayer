@@ -15,8 +15,8 @@ import java.util.List;
 
 public class SettingsActivity extends PreferenceActivity {
 
-    public static final String PORT_VALUE = "port_value";
     public static final String HOTSPOT_NAME = "hotspot_name";
+    public static final String SDCARD_SCAN = "sdcard_switch";
 
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
@@ -75,7 +75,6 @@ public class SettingsActivity extends PreferenceActivity {
             addPreferencesFromResource(R.xml.pref_general);
             setHasOptionsMenu(true);
 
-            bindPreferenceSummaryToValue(findPreference(PORT_VALUE));
             bindPreferenceSummaryToValue(findPreference(HOTSPOT_NAME));
         }
 

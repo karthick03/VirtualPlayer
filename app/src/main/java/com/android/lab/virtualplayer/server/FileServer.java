@@ -8,9 +8,9 @@ import com.android.lab.virtualplayer.data.MusicTrack;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -27,15 +27,22 @@ class FileServer extends NanoHTTPD {
 
     private List<MusicTrack> mediaFiles;
     private StorageHelper helper;
+    private boolean canScanExternal;
 
-    FileServer(int port) {
+    FileServer(int port, boolean canScanExternal) {
         super(port);
+        this.canScanExternal = canScanExternal;
         mediaFiles = new ArrayList<>();
         helper = new StorageHelper();
     }
 
-    public void refreshCache() {
-        mediaFiles = getMusicTracks(getMusicFiles(helper.getInternalSDPath(), helper.getExternalSDPath()));
+    void refreshCache() {
+
+        List<File> fileList = canScanExternal
+                ? getMusicFiles(helper.getInternalSDPath(), helper.getExternalSDPath())
+                : getMusicFiles(helper.getInternalSDPath());
+
+        mediaFiles = getMusicTracks(fileList);
     }
 
     @Override
@@ -79,7 +86,10 @@ class FileServer extends NanoHTTPD {
         for(MusicTrack track: mediaFiles)
             jsonArray.put(track.toJSON());
 
-        return NanoHTTPD.newFixedLengthResponse(jsonArray.toString());
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.putOpt("files", jsonArray);
+
+        return NanoHTTPD.newFixedLengthResponse(jsonObject.toString());
     }
 
     private List<MusicTrack> getMusicTracks(List<File> mediaFiles) {
@@ -117,12 +127,7 @@ class FileServer extends NanoHTTPD {
         if(!root.exists()) return;
 
         if(root.isDirectory())
-            for (File f : root.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File pathname) {
-                    return true;
-                }
-            }))
+            for (File f : root.listFiles())
                 getFilesRecursively(f, musicList);
         else if (root.getName().contains(".mp3"))
             musicList.add(root);

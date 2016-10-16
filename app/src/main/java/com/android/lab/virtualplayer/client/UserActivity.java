@@ -13,9 +13,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.android.lab.virtualplayer.R;
 import com.android.lab.virtualplayer.SettingsActivity;
+import com.android.lab.virtualplayer.constants.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,24 +39,24 @@ public class UserActivity extends Activity {
             actionBar.setHomeButtonEnabled(true);
         }
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = this.getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                startActivity(new Intent(UserActivity.this, SettingsActivity.class));
-        }
-
-        return true;
-    }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = this.getMenuInflater();
+//        inflater.inflate(R.menu.menu_main, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        switch (item.getItemId()) {
+//            case R.id.action_settings:
+//                startActivity(new Intent(UserActivity.this, SettingsActivity.class));
+//        }
+//
+//        return true;
+//    }
 
 
     public void join(View view) {
@@ -64,11 +66,9 @@ public class UserActivity extends Activity {
         List<ScanResult> scanResultList =   wifiManager.getScanResults();
         List<ScanResult> finalList = new ArrayList<>();
 
-        for(ScanResult scanResult: scanResultList) {
-            Log.d("USERA", scanResult.SSID);
+        for(ScanResult scanResult: scanResultList)
             if (scanResult.SSID.startsWith("VP_"))
                 finalList.add(scanResult);
-        }
 
         if(finalList.size() == 1) {
             WifiConfiguration wc = new WifiConfiguration();
@@ -82,9 +82,12 @@ public class UserActivity extends Activity {
 
             int netId = wifiManager.addNetwork(wc);
             wifiManager.enableNetwork(netId, true);
-            Log.d("USERA", String.format(Locale.ENGLISH, "Connected %s %s", s.BSSID, s.toString()));
+            Log.d(Constants.TAG, String.format(Locale.ENGLISH, "Connected %s %s", s.BSSID, s.toString()));
 
-            //TODO: intent to List of music files
+            startActivity(new Intent(UserActivity.this, MusicActivity.class));
+        } else {
+            Toast.makeText(getApplicationContext(), "No VP hotspot running!", Toast.LENGTH_LONG).show();
         }
+
     }
 }
