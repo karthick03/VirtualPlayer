@@ -15,4 +15,5 @@
     <string name="stop_server">Server stopped.</string>
     <string name="now_playing">Now Playing</string>
     <string name="music_control">Music control</string>
+    <string name="people_listening_to_your_music">People listening to your music</string>
 </resources>

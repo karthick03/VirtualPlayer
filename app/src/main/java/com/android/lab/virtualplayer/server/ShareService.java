@@ -74,7 +74,7 @@ public class ShareService extends IntentService {
     }
 
     private void startServer() throws IOException {
-        fileServer = new FileServer(Constants.PORT, true);
+        fileServer = new FileServer(Constants.PORT);
         fileServer.start();
     }
 

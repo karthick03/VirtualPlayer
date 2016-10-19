@@ -1,6 +1,7 @@
 package com.android.lab.virtualplayer.client;
 
 import android.app.Activity;
+import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -31,7 +32,7 @@ import java.util.List;
 
 public class MusicActivity extends Activity {
 
-    private RequestQueue requestQueue = null;
+    private static RequestQueue requestQueue = null;
     private MusicAdapter musicAdapter;
     private MediaPlayer mediaPlayer;
 
@@ -85,7 +86,7 @@ public class MusicActivity extends Activity {
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
-                getRequestQueue().add(getMusicList);
+                getRequestQueue(getApplicationContext()).add(getMusicList);
             }
         }, 3000);
     }
@@ -119,9 +120,9 @@ public class MusicActivity extends Activity {
         }
     }
 
-    RequestQueue getRequestQueue() {
+    public static RequestQueue getRequestQueue(Context mContext) {
         if (requestQueue == null)
-            requestQueue = Volley.newRequestQueue(getApplicationContext());
+            requestQueue = Volley.newRequestQueue(mContext);
         return requestQueue;
     }
 
