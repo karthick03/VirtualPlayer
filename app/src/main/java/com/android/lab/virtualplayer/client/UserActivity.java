@@ -1,5 +1,6 @@
 package com.android.lab.virtualplayer.client;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -7,16 +8,11 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.app.ActionBar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.android.lab.virtualplayer.R;
-import com.android.lab.virtualplayer.SettingsActivity;
 import com.android.lab.virtualplayer.constants.Constants;
 
 import java.util.ArrayList;
@@ -39,25 +35,6 @@ public class UserActivity extends Activity {
             actionBar.setHomeButtonEnabled(true);
         }
     }
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = this.getMenuInflater();
-//        inflater.inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//
-//        switch (item.getItemId()) {
-//            case R.id.action_settings:
-//                startActivity(new Intent(UserActivity.this, SettingsActivity.class));
-//        }
-//
-//        return true;
-//    }
-
 
     public void join(View view) {
 

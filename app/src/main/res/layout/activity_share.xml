@@ -33,12 +33,18 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/status"
-        android:textSize="20sp"
-        android:textIsSelectable="true"
-        android:textColor="@color/colorPrimary"
-        android:layout_centerInParent="true"
+        android:id="@+id/people_using"
+        android:text="@string/people_listening_to_your_music"
+        android:textSize="19sp"
+        android:layout_margin="15dp"
+        android:layout_below="@id/hotspot"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ListView
+        android:layout_below="@id/people_using"
+        android:id="@+id/clients"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
 </RelativeLayout>

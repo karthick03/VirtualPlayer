@@ -1,6 +1,5 @@
 package com.android.lab.virtualplayer.server;
 
-import android.media.MediaMetadataRetriever;
 import android.util.Log;
 
 import com.android.lab.virtualplayer.StorageHelper;
@@ -10,58 +9,55 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
 
-import static android.media.MediaMetadataRetriever.METADATA_KEY_ARTIST;
-import static android.media.MediaMetadataRetriever.METADATA_KEY_DURATION;
-
 class FileServer extends NanoHTTPD {
 
-    private List<MusicTrack> mediaFiles;
+    private MusicManager musicManager;
     private StorageHelper helper;
-    private boolean canScanExternal;
+    private Map<String, Integer> clients;
 
-    FileServer(int port, boolean canScanExternal) {
+    FileServer(int port) {
         super(port);
-        this.canScanExternal = canScanExternal;
-        mediaFiles = new ArrayList<>();
+        musicManager = new MusicManager();
         helper = new StorageHelper();
+        clients = new HashMap<>();
     }
 
     void refreshCache() {
-
-        List<File> fileList = canScanExternal
-                ? getMusicFiles(helper.getInternalSDPath(), helper.getExternalSDPath())
-                : getMusicFiles(helper.getInternalSDPath());
-
-        mediaFiles = getMusicTracks(fileList);
+        musicManager.refreshCache(helper.getInternalSDPath(), helper.getExternalSDPath());
     }
 
     @Override
     public void start() throws IOException {
         super.start();
-        refreshCache();
+        musicManager.makeList(helper.getInternalSDPath(), helper.getExternalSDPath());
     }
 
     @Override
     public Response serve(IHTTPSession session) {
-        String ip = session.getRemoteIpAddress();
-        String request = session.getUri();
-        Map<String, List<String>> params = session.getParameters();
-
-        Log.d("NanoHTTPD", ip + "  " + request + " " + params);
-
         try {
-            if (request.contentEquals("/files"))
-                return params.containsKey("id") ? streamMusic(params.get("id").get(0)) : serveFiles();
+            switch (session.getUri()) {
+                case "/files":
+                    Map<String, List<String>> params = session.getParameters();
+                    if (params.containsKey("id")) {
+                        int fid = Integer.parseInt(params.get("id").get(0));
+                        clients.put(session.getRemoteIpAddress(), fid);
+                        return streamMusic(fid);
+                    } else
+                        return serveFiles();
+                case "/clients":
+                    return getClients();
+                default:
+
+            }
         } catch (Exception e) {
             Log.e("NanoHTTPD", e.toString());
         }
@@ -69,21 +65,18 @@ class FileServer extends NanoHTTPD {
         return NanoHTTPD.newFixedLengthResponse("OK");
     }
 
-    private Response streamMusic(String file) throws FileNotFoundException {
+    private Response streamMusic(int fid) throws FileNotFoundException {
 
-        if (file.isEmpty()) return null;
+        if (fid > musicManager.getList().size() || fid <= 0) return null;
 
-        int id = Integer.parseInt(file);
-        if (id > mediaFiles.size() || id <= 0) return null;
-
-        MusicTrack toBePlayed = mediaFiles.get(id - 1);
+        MusicTrack toBePlayed = musicManager.getList().get(fid - 1);
 
         return NanoHTTPD.newChunkedResponse(Response.Status.OK, "audio/mpeg3", new FileInputStream(toBePlayed.getRawFile()));
     }
 
     private Response serveFiles() throws JSONException {
         JSONArray jsonArray = new JSONArray();
-        for(MusicTrack track: mediaFiles)
+        for(MusicTrack track: musicManager.getList())
             jsonArray.put(track.toJSON());
 
         JSONObject jsonObject = new JSONObject();
@@ -92,45 +85,18 @@ class FileServer extends NanoHTTPD {
         return NanoHTTPD.newFixedLengthResponse(jsonObject.toString());
     }
 
-    private List<MusicTrack> getMusicTracks(List<File> mediaFiles) {
-        List<MusicTrack> musicTracks = new ArrayList<>();
+    private Response getClients() throws JSONException {
+        JSONArray jsonArray = new JSONArray();
 
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
-
-        int index = 1;
-        for (File file : mediaFiles) {
-            retriever.setDataSource(file.getAbsolutePath());
-            musicTracks.add(new MusicTrack (
-                    index,
-                    file.getName(),
-                    retriever.extractMetadata(METADATA_KEY_ARTIST),
-                    retriever.extractMetadata(METADATA_KEY_DURATION),
-                    file)
-            );
-            index++;
+        for (String key : clients.keySet()) {
+            JSONObject client = new JSONObject();
+            client.put("ip", key);
+            String song_name = musicManager.getList().get(clients.get(key)).getName();
+            client.put("song", song_name);
+            jsonArray.put(client);
         }
 
-        return musicTracks;
-    }
-
-    private List<File> getMusicFiles(String... paths) {
-        List<File> music = new ArrayList<>();
-
-        for(String path: paths) {
-            File root = new File(path).getAbsoluteFile();
-            getFilesRecursively(root, music);
-        }
-        return music;
-    }
-
-    private void getFilesRecursively(File root, List<File> musicList) {
-        if(!root.exists()) return;
-
-        if(root.isDirectory())
-            for (File f : root.listFiles())
-                getFilesRecursively(f, musicList);
-        else if (root.getName().contains(".mp3"))
-            musicList.add(root);
+        return NanoHTTPD.newFixedLengthResponse(jsonArray.toString());
     }
 }
 
