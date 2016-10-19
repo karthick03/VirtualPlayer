@@ -7,6 +7,7 @@
     <TextView
         android:hint="Song title "
         android:textSize="20sp"
+        android:textColor="#000"
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -16,6 +17,7 @@
 
         android:id="@+id/artist"
         android:hint="Artist"
+        android:textColor="#000"
         android:textSize="15sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -25,6 +27,7 @@
 
         android:id="@+id/duration"
         android:hint="1.23"
+        android:textColor="#000"
         android:textSize="15sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

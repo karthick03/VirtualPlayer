@@ -3,6 +3,7 @@ package com.android.lab.virtualplayer.server;
 import android.util.Log;
 
 import com.android.lab.virtualplayer.StorageHelper;
+import com.android.lab.virtualplayer.constants.Constants;
 import com.android.lab.virtualplayer.data.MusicTrack;
 
 import org.json.JSONArray;
@@ -38,7 +39,7 @@ class FileServer extends NanoHTTPD {
     @Override
     public void start() throws IOException {
         super.start();
-        musicManager.makeList(helper.getInternalSDPath(), helper.getExternalSDPath());
+        refreshCache();
     }
 
     @Override
@@ -46,6 +47,7 @@ class FileServer extends NanoHTTPD {
         try {
             switch (session.getUri()) {
                 case "/files":
+                    Log.d(Constants.TAG, "Serving files");
                     Map<String, List<String>> params = session.getParameters();
                     if (params.containsKey("id")) {
                         int fid = Integer.parseInt(params.get("id").get(0));
@@ -56,7 +58,7 @@ class FileServer extends NanoHTTPD {
                 case "/clients":
                     return getClients();
                 default:
-
+                    return NanoHTTPD.newFixedLengthResponse("OK");
             }
         } catch (Exception e) {
             Log.e("NanoHTTPD", e.toString());
@@ -76,17 +78,21 @@ class FileServer extends NanoHTTPD {
 
     private Response serveFiles() throws JSONException {
         JSONArray jsonArray = new JSONArray();
+        Log.d(Constants.TAG, musicManager.getList().size() + "");
         for(MusicTrack track: musicManager.getList())
             jsonArray.put(track.toJSON());
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.putOpt("files", jsonArray);
 
+        Log.d(Constants.TAG, jsonObject.toString());
         return NanoHTTPD.newFixedLengthResponse(jsonObject.toString());
     }
 
     private Response getClients() throws JSONException {
         JSONArray jsonArray = new JSONArray();
+
+        Log.d(Constants.TAG, "Serving /clients");
 
         for (String key : clients.keySet()) {
             JSONObject client = new JSONObject();
@@ -95,6 +101,8 @@ class FileServer extends NanoHTTPD {
             client.put("song", song_name);
             jsonArray.put(client);
         }
+
+        Log.d(Constants.TAG, jsonArray.toString());
 
         return NanoHTTPD.newFixedLengthResponse(jsonArray.toString());
     }

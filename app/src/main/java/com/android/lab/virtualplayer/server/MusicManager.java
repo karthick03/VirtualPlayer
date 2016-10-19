@@ -13,13 +13,10 @@ import static android.media.MediaMetadataRetriever.METADATA_KEY_DURATION;
 
 public class MusicManager {
 
-    private static List<MusicTrack> mediaFiles = null;
+    private List<MusicTrack> mediaFiles = null;
 
-
-    public void makeList(String... paths) {
-        if (mediaFiles != null ) {
-            mediaFiles = getMusicTracks(getMusicFiles(paths));
-        }
+    MusicManager() {
+        mediaFiles = new ArrayList<>();
     }
 
     public List<MusicTrack> getList() {

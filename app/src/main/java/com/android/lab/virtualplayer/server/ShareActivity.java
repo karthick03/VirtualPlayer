@@ -15,6 +15,7 @@ import android.widget.ToggleButton;
 
 import com.android.lab.virtualplayer.R;
 import com.android.lab.virtualplayer.client.MusicActivity;
+import com.android.lab.virtualplayer.constants.Constants;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
@@ -64,7 +65,7 @@ public class ShareActivity extends Activity {
             @Override
             public void run() {
                 MusicActivity.getRequestQueue(getApplicationContext()).add(new JsonArrayRequest(
-                        "",
+                        "http://192.168.43.1:" + Constants.PORT + "/clients",
                         new Response.Listener<JSONArray>() {
                             @Override
                             public void onResponse(JSONArray response) {

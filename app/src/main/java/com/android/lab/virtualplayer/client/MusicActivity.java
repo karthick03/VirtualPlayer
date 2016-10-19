@@ -36,6 +36,7 @@ public class MusicActivity extends Activity {
     private MusicAdapter musicAdapter;
     private MediaPlayer mediaPlayer;
 
+
     private ImageButton playButton;
     private TextView playingName;
 
@@ -64,7 +65,7 @@ public class MusicActivity extends Activity {
         });
 
         final JsonObjectRequest getMusicList = new JsonObjectRequest(
-                "http://192.168.43.1:" + Constants.PORT,
+                "http://192.168.43.1:" + Constants.PORT + "/files",
                 null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -89,6 +90,21 @@ public class MusicActivity extends Activity {
                 getRequestQueue(getApplicationContext()).add(getMusicList);
             }
         }, 3000);
+
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mediaPlayer != null) {
+                    if (mediaPlayer.isPlaying()) {
+                        playButton.setImageResource(R.drawable.ic_play);
+                        mediaPlayer.pause();
+                    } else {
+                        playButton.setImageResource(R.drawable.ic_play);
+                        mediaPlayer.start();
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -102,7 +118,7 @@ public class MusicActivity extends Activity {
     }
 
     public void updateNowPlaying(MusicTrack playingTrack) {
-        playButton.setImageResource(R.drawable.ic_play);
+        playButton.setImageResource(R.drawable.ic_pause);
         playingName.setText(playingTrack.getName());
     }
 
@@ -114,8 +130,10 @@ public class MusicActivity extends Activity {
         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
             mediaPlayer.setDataSource("http://192.168.43.1:" + Constants.PORT + "/files?id=" + id);
-            mediaPlayer.setLooping(true);
-        } catch (IOException e) {
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -134,6 +152,7 @@ public class MusicActivity extends Activity {
             for (int i = 0; i < files.length(); i++)
                 tracks.add(MusicTrack.fromJSON(files.getJSONObject(i)));
 
+            Log.d(Constants.TAG, tracks.size() + "");
             musicAdapter.setMusicTracks(tracks);
             musicAdapter.notifyDataSetChanged();
         } catch (Exception e) {

@@ -39,16 +39,6 @@ class MusicAdapter extends BaseAdapter {
     }
 
     @Override
-    public void registerDataSetObserver(DataSetObserver observer) {
-
-    }
-
-    @Override
-    public void unregisterDataSetObserver(DataSetObserver observer) {
-
-    }
-
-    @Override
     public int getCount() {
         return musicTracks.size();
     }
