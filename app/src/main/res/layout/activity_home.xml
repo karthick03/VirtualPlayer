@@ -8,26 +8,36 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#2196f3"
     tools:context="com.android.lab.virtualplayer.HomeActivity">
 
     <Button
         android:text="Share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="111dp"
+        android:layout_marginTop="147dp"
         android:id="@+id/sharer"
-        android:onClick="sharer" />
+        android:onClick="sharer"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/roundedbutton"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:text="Listen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignLeft="@+id/sharer"
-        android:layout_alignStart="@+id/sharer"
-        android:layout_marginBottom="96dp"
         android:id="@+id/user"
-        android:onClick="user" />
+        android:onClick="user"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/roundedbutton"
+        android:layout_marginTop="95dp"
+        android:layout_below="@+id/sharer"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>

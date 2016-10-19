@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/colorButtonNormal"
     tools:context="com.android.lab.virtualplayer.client.MusicActivity">
 
     <ListView
@@ -18,7 +19,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_margin="1dp"
-        android:background="@color/colorPrimary">
+        android:background="@color/colorButtonNormal">
 
         <ImageButton
             android:layout_width="wrap_content"
@@ -26,6 +27,7 @@
             android:id="@+id/play"
             android:src="@drawable/ic_play"
             android:layout_gravity="end"
+            android:background="@drawable/roundedbutton"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:contentDescription="@string/music_control" />
@@ -47,7 +49,7 @@
             android:id="@+id/playing_name"
             android:textSize="16sp"
             android:textStyle="italic"
-            android:textColor="#000"
+            android:textColor="#FFFFFF"
             android:layout_alignParentBottom="true"
             />
 

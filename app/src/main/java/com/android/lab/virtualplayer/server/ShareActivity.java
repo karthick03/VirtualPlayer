@@ -106,6 +106,7 @@ public class ShareActivity extends Activity {
 
     public void create() {
         ShareService.startServer(this);
+        status.setText(R.string.people_listening_to_your_music);
     }
 
     public void stop() {
